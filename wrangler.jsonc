@@ -1,0 +1,11 @@
+{
+  "name": "dashboard-laboratorio-api",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-11-23",
+  "workers_dev": true,
+  "vars": {
+    "NEW_RELIC_ACCOUNT_ID": "3437305",
+    "NEW_RELIC_REGION": "US",
+    "ALLOWED_ORIGINS": "https://doneladiou.github.io"
+  }
+}

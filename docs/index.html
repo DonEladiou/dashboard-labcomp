@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Estado de CPU, memoria y actividad de los equipos del LABCOMP.">
+  <title>Labcomp Status</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231b232b'/%3E%3Cpath d='M16 16h13v13H16zm19 0h13v13H35zM16 35h13v13H16z' fill='%23b4d68c'/%3E%3Cpath d='M35 35h13v13H35z' fill='%23e7b86b'/%3E%3C/svg%3E">
+  <link rel="preload" href="./fonts/IBMPlexSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./style.css">
+  <script src="./config.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="icon-equipment" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></symbol>
+    <symbol id="icon-chip" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 2v3m6-3v3M9 19v3m6-3v3M2 9h3m-3 6h3m14-6h3m-3 6h3"/></symbol>
+    <symbol id="icon-memory" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10v4m5-4v4m5-4v4M7 18v3m5-3v3m5-3v3"/></symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  </svg>
+  <div class="app-layout">
+    <div class="masthead">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>LABCOMP</span></div>
+      <div class="refresh-info"><svg class="icon" aria-hidden="true"><use href="#icon-clock"/></svg><div><span>Actualización automática</span><strong>Cada <span id="refresh-seconds">30</span> s</strong></div></div>
+    </div>
+    <main class="workspace" id="resumen">
+      <header class="topbar">
+        <h1>Labcomp Status</h1>
+        <div class="controls"><label class="sr-only" for="range">Periodo de métricas</label><select id="range"><option value="30m">Últimos 30 minutos</option><option value="1h" selected>Última hora</option><option value="3h">Últimas 3 horas</option><option value="24h">Últimas 24 horas</option></select><button id="refresh" type="button">Actualizar</button></div>
+      </header>
+      <div class="statusbar"><div class="status" id="status" data-state="pending" role="status"><span class="status-dot" aria-hidden="true"></span><span id="status-text">Esperando conexión</span></div><span id="updated">Sin datos recibidos</span><span class="access-label">Solo lectura</span></div>
+      <div class="notice" id="notice" role="alert" hidden></div>
+      <section class="dashboard-grid" aria-label="Paneles de monitoreo">
+        <article class="panel usage-panel" id="panel-usage">
+          <div class="panel-heading"><h2>CPU y RAM por equipo</h2><svg class="icon heading-icon" aria-hidden="true"><use href="#icon-equipment"/></svg></div>
+          <div class="usage-key"><span><i class="swatch cpu-swatch"></i>CPU</span><span><i class="swatch ram-swatch"></i>RAM</span><span class="latest-label">Última muestra del periodo</span></div>
+          <div class="usage-list" id="usage-list"></div><p class="panel-message" data-message="usage">Esperando datos</p>
+          <div class="panel-strip"><svg class="icon" aria-hidden="true"><use href="#icon-clock"/></svg><span>CPU y memoria · Última muestra disponible</span></div>
+        </article>
+        <article class="panel metric" id="panel-cpu">
+          <div class="panel-heading"><h2>CPU promedio</h2><span class="tag">GLOBAL</span></div>
+          <div class="gauge" id="cpu-gauge" data-empty="true" role="img" aria-label="CPU promedio: sin datos"><svg viewBox="0 0 180 180" aria-hidden="true"><circle class="gauge-track" cx="90" cy="90" r="74"/><circle class="gauge-progress" id="cpu-progress" cx="90" cy="90" r="74"/></svg><div class="gauge-content"><div class="metric-value" id="cpu-value">—</div><p class="metric-caption">Uso de CPU</p></div></div>
+          <p class="panel-message" data-message="cpu">Esperando datos</p><div class="metric-period">Promedio del periodo seleccionado</div>
+        </article>
+        <div class="trends" aria-label="Evolución de CPU y memoria">
+          <article class="panel line-panel" id="panel-cpuSeries"><div class="panel-heading"><h2><svg class="icon cpu-icon" aria-hidden="true"><use href="#icon-chip"/></svg>CPU por equipo</h2><span class="unit">%</span></div><div class="chart" id="cpu-chart"></div><p class="panel-message" data-message="cpuSeries">Esperando datos</p><div class="legend" id="cpu-legend"></div></article>
+          <article class="panel line-panel" id="panel-ramSeries"><div class="panel-heading"><h2><svg class="icon ram-icon" aria-hidden="true"><use href="#icon-memory"/></svg>RAM por equipo</h2><span class="unit">%</span></div><div class="chart" id="ram-chart"></div><p class="panel-message" data-message="ramSeries">Esperando datos</p><div class="legend" id="ram-legend"></div></article>
+        </div>
+        <article class="panel disconnect-panel" id="panel-disconnects"><div class="panel-heading"><h2>Desconexiones</h2><span class="tag">24 H</span></div><div id="disconnect-chart" class="donut-wrap"></div><p class="panel-message" data-message="disconnects">Esperando datos</p><div class="event-list" id="disconnect-list"></div><p class="footnote">Eventos de desconexión o apagado. No indican el estado actual del equipo.</p></article>
+        <article class="panel logins-panel" id="panel-logins"><div class="panel-heading"><h2>Conexiones a equipos</h2><span class="tag">ÚLTIMAS 24 HORAS</span></div><div class="table-scroll"><table><caption class="sr-only">Accesos durante las últimas 24 horas</caption><thead><tr><th scope="col">Usuario</th><th scope="col">Equipo</th><th scope="col" class="number">Logins</th></tr></thead><tbody id="login-rows"></tbody></table></div><p class="panel-message" data-message="logins">Esperando datos</p><p class="footnote">Excluye root y gdm-greeter.</p></article>
+      </section>
+      <footer><span id="footer-source">Fuente: New Relic</span></footer>
+    </main>
+  </div>
+</body>
+</html>
