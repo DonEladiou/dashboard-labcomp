@@ -4,6 +4,16 @@ Monitoreo del LABCOMP con seis paneles basados en el dashboard `Test` de New Rel
 
 La página existente `DonEladiou/paginachecklabit` contiene el desafío de flags de LabCIB. Este proyecto está destinado al repositorio separado `DonEladiou/dashboard-labcomp`. No reemplaza el `index.html` de la página de flags.
 
+## Direcciones publicadas
+
+- Página: https://doneladiou.github.io/dashboard-labcomp/
+- API: https://dashboard-laboratorio-api.fredybozoou.workers.dev/api/dashboard
+- Repositorio: https://github.com/DonEladiou/dashboard-labcomp
+
+La página ya apunta al Worker. Para recibir datos reales, configura en Cloudflare el secreto `NEW_RELIC_USER_KEY`. El Worker requiere también las variables `NEW_RELIC_ACCOUNT_ID=3437305`, `NEW_RELIC_REGION=US` y `ALLOWED_ORIGINS=https://doneladiou.github.io`, ya establecidas en la configuración de producción.
+
+En el panel del Worker: **Settings → Runtime variables and secrets → Add variable**. Usa `NEW_RELIC_USER_KEY` como Key, pega la User API key como Value, marca **Secret**, selecciona **Production** y confirma **Add variable and deploy**. La clave se introduce directamente en Cloudflare.
+
 ## Publicación temporal
 
 ```text
@@ -34,7 +44,7 @@ Edita `docs/config.js`, indicando la dirección real del Worker sin la ruta `/ap
 
 ```js
 window.LAB_CONFIG = {
-  apiBaseUrl: 'https://dashboard-laboratorio-api.TU-SUBDOMINIO.workers.dev',
+  apiBaseUrl: 'https://dashboard-laboratorio-api.fredybozoou.workers.dev',
   refreshSeconds: 30
 };
 ```
